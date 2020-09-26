@@ -17,6 +17,9 @@
 package com.intel.hibench.common.streaming.metrics
 
 import com.intel.hibench.common.streaming.Platform
+import com.tencentcloudapi.ckafka.v20190819.CkafkaClient
+import com.tencentcloudapi.ckafka.v20190819.models.{CreateTopicRequest, DescribeTopicAttributesRequest}
+import com.tencentcloudapi.common.Credential
 import kafka.admin.AdminUtils
 import kafka.utils.ZKStringSerializer
 import org.I0Itec.zkclient.ZkClient
@@ -46,5 +49,26 @@ object MetricsUtil {
     } finally {
       zkClient.close()
     }
+  }
+
+  def createCKafkaTopic(region: String, instanceId:String, secretId: String, secretKey: String, brokerList: String, topic: String, partitions: Int): Unit = {
+
+    val ckafkaClient = new CkafkaClient(new Credential(secretId, secretKey), region)
+    val request = new CreateTopicRequest()
+    request.setInstanceId(instanceId)
+    request.setTopicName(topic)
+    request.setPartitionNum(partitions.asInstanceOf[Number].longValue())
+    request.setReplicaNum(2.toLong)
+    try {
+      ckafkaClient.CreateTopic(request)
+
+      val descRequest = new DescribeTopicAttributesRequest();
+      descRequest.setInstanceId(instanceId)
+      descRequest.setTopicName(topic)
+      //TODO
+      Thread.sleep(8000)
+
+    }
+
   }
 }

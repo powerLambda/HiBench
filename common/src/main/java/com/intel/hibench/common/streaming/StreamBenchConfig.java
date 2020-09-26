@@ -40,6 +40,14 @@ public class StreamBenchConfig {
 
   public static String KAFKA_TOPIC_PARTITIONS = "hibench.streambench.kafka.topicPartitions";
 
+  public static String CKAFKA_REGION = "hibench.streambench.ckafka.region";
+
+  public static String CKAFKA_INSTANCE_ID = "hibench.streambench.ckafka.InstanceId";
+
+  public static String CKAFKA_SECRET_ID = "hibench.streambench.ckafka.secretId";
+
+  public static String CKAFKA_SECRETKEY = "hibench.streambench.ckafka.secretKey";
+
   public static String DEBUG_MODE = "hibench.streambench.debugMode";
 
   // =====================================

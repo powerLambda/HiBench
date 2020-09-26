@@ -17,13 +17,17 @@
 
 package com.intel.hibench.flinkbench;
 
-import com.intel.hibench.flinkbench.microbench.*;
+import com.intel.hibench.common.streaming.ConfigLoader;
+import com.intel.hibench.common.streaming.Platform;
+import com.intel.hibench.common.streaming.StreamBenchConfig;
+import com.intel.hibench.common.streaming.metrics.MetricsUtil;
+import com.intel.hibench.flinkbench.microbench.FixedWindow;
+import com.intel.hibench.flinkbench.microbench.Identity;
+import com.intel.hibench.flinkbench.microbench.Repartition;
+import com.intel.hibench.flinkbench.microbench.WordCount;
 import com.intel.hibench.flinkbench.util.BenchLogUtil;
 import com.intel.hibench.flinkbench.util.FlinkBenchConfig;
-import com.intel.hibench.common.streaming.ConfigLoader;
-import com.intel.hibench.common.streaming.metrics.MetricsUtil;
-import com.intel.hibench.common.streaming.StreamBenchConfig;
-import com.intel.hibench.common.streaming.Platform;
+import org.apache.commons.lang.StringUtils;
 
 public class RunBench {
   public static void main(String[] args) throws Exception {
@@ -55,7 +59,14 @@ public class RunBench {
     int intervalSpan = Integer.parseInt(cl.getProperty(StreamBenchConfig.DATAGEN_INTERVAL_SPAN));
     conf.reportTopic = MetricsUtil.getTopic(Platform.FLINK, conf.testCase, producerNum, recordsPerInterval, intervalSpan);
     int reportTopicPartitions = Integer.parseInt(cl.getProperty(StreamBenchConfig.KAFKA_TOPIC_PARTITIONS));
-    MetricsUtil.createTopic(conf.zkHost, conf.reportTopic, reportTopicPartitions);
+    String region = cl.getProperty(StreamBenchConfig.CKAFKA_REGION);
+    String instanceId = cl.getProperty(StreamBenchConfig.CKAFKA_INSTANCE_ID);
+    String secretId = cl.getProperty(StreamBenchConfig.CKAFKA_SECRET_ID);
+    String secretKey = cl.getProperty(StreamBenchConfig.CKAFKA_SECRETKEY);
+    if(StringUtils.isNotBlank(conf.zkHost) && StringUtils.isBlank(secretId))
+      MetricsUtil.createTopic(conf.zkHost, conf.reportTopic, reportTopicPartitions);
+    else
+      MetricsUtil.createCKafkaTopic(region, instanceId, secretId, secretKey, conf.brokerList, conf.reportTopic, reportTopicPartitions);
 
     // Main testcase logic
     String testCase = conf.testCase;
