@@ -6,6 +6,7 @@ import org.apache.flink.api.java.typeutils.TupleTypeInfo;
 import org.apache.flink.api.java.typeutils.TypeExtractor;
 import org.apache.flink.streaming.util.serialization.KeyedDeserializationSchema;
 import org.apache.flink.streaming.util.serialization.KeyedSerializationSchema;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.io.IOException;
 
@@ -19,6 +20,16 @@ public class KeyedTupleSchema implements KeyedSerializationSchema<Tuple2<String,
   @Override
   public byte[] serializeValue(Tuple2<String, String> element) {
     return element.f1.getBytes();
+  }
+
+  @Override
+  public String getTargetTopic(Tuple2<String, String> stringStringTuple2) {
+    return null; // we are never overriding the topic
+  }
+
+  @Override
+  public Tuple2<String, String> deserialize(ConsumerRecord<byte[], byte[]> record) throws IOException {
+    return new Tuple2<String, String>(new String(record.key()), new String(record.value()));
   }
 
   @Override
