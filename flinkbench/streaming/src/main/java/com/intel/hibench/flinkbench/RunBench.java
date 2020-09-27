@@ -27,7 +27,7 @@ import com.intel.hibench.flinkbench.microbench.Repartition;
 import com.intel.hibench.flinkbench.microbench.WordCount;
 import com.intel.hibench.flinkbench.util.BenchLogUtil;
 import com.intel.hibench.flinkbench.util.FlinkBenchConfig;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RunBench {
   public static void main(String[] args) throws Exception {
